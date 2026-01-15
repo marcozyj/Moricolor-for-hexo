@@ -1,29 +1,42 @@
-# Moricolor-for-Hexo
+# Moricolor-for-Hexo (Modified)
 
-本项目 **基于 [Moricolor-for-Hexo](https://github.com/kyya/Moricolor-for-Hexo) 修改而来**，在原有主题设计与理念的基础上，进行了适配、结构调整及部分功能修改，用于个人或非商业用途。
-
----
-
-## Credits / 致谢
-
-原项目及相关资源版权归原作者及原项目所有：
-
-- **Moricolor-for-Hexo**  
-  https://github.com/kyya/Moricolor-for-Hexo
-- **Moricolor-for-Typecho**
-- **Flat UI**
-- **LWL Hitokoto API**
-- **Trii Hsia**
+> 本项目基于原作者 **Moricolor-for-Hexo** 进行二次修改与维护。  
+> 原主题以自然、恬静的阅读体验为设计理念，在此基础上进行了适配与功能调整。
 
 ---
 
-## License / 使用说明
+> ⚠️ 本项目 **不隶属于原作者**，修改内容仅代表维护者个人行为。
 
-本项目遵循原作者的使用声明：
+---
 
-- 本程序源代码 **可任意修改并任意使用**
-- **禁止商业化用途**
-- 使用过程中产生的任何不可预知事件，**原作者不承担任何责任**
-- 如您喜欢本主题，**建议在页面某处保留原作者 Trii Hsia 的版权信息**
+## 🔗 原项目地址
 
-感谢原作者 **Trii Hsia** 的开源贡献 ❤️
+- 原仓库：  
+  👉 https://github.com/kyya/Moricolor-for-Hexo
+
+---
+
+## 🙏 Credits
+
+感谢以下项目与作者的开源贡献：
+
+- [Moricolor-for-Typecho](https://github.com/txperl/Moricolor-for-Typecho/)
+- [Flat UI](http://www.bootcss.com/p/flat-ui/)
+- [LWL Hitokoto API](https://blog.lwl12.com/read/hitokoto-api.html)
+
+---
+
+## © 原作者声明（Trii Hsia）
+
+> 本程序源代码可任意修改并任意使用，但**禁止商业化用途**。  
+> 一旦使用，任何不可知事件都与原作者无关，原作者不承担任何后果。  
+> 如果您喜欢，希望可以在页面某处保留原作者 **Trii Hsia** 版权信息。  
+>  
+> 感谢。
+
+---
+
+## 📄 License
+
+本项目继承并遵循原项目的授权与使用声明，  
+**请在使用、分发或修改前，务必阅读并遵守原作者的相关说明。**
