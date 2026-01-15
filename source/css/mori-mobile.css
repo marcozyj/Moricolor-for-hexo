@@ -1,0 +1,43 @@
+@media (max-width: 960px) {
+  .post-tor {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 10px;
+  }
+  .post-headline {
+    font-size: 3rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  div#main::after {
+    background-image: url(/img/mobile/haruka.png);
+  }
+  .post-content ul, .post-list, .tags-list {
+    margin-left: .7rem;
+    margin-right: .7rem;
+  }
+  .arc-t {
+    width:100%;
+  }
+  #bottomtools ul{
+    padding: 2px;
+  }
+}
+
+@media (min-width: 768px) {
+  .cover-image {
+    height: 40vw;
+    max-height: 400px;
+  }
+}
+
+@media (max-width: 992px) {
+  .arc-t {
+    width:50%;
+  }
+}

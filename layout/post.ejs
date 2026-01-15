@@ -1,0 +1,86 @@
+<main class="container">
+  <article class="post" id="main-post" style="display: none;">
+    <div class="post-header">
+      <h2 class="post-headline" title="<%= page.title %>"><%= page.title %></h2>
+      <div class="post-text-bar" style="text-align: right">
+        <a href="/" class="fui-home"></a>
+        <a id="tor_show" href="javascript:void(0)" class="fui-list-bulleted"></a>
+        <a id="comment_go" href="#comments" class="fui-bubble"></a>
+      </div>
+      <div class="post-info">
+        <a><%- time_tag(page.date) %></a>
+        <span class="post-info-tag">
+          <% page.tags.each(function(tag) { %>
+            <a href="<%= url_for(tag.path) %>"><%= tag.name %></a>
+          <% }) %>
+        </span>
+        <% page.categories.each(function(cat) { %>
+          <a href="<%= url_for(cat.path) %>"><%= cat.name %></a>
+        <% }) %>
+      </div>
+    </div>
+    <hr>
+    <% if (theme.toc) { %>
+    <div class="post-tor" style="display: block">
+      <div class="post-tor-content">
+        <%- post_tor(page.content) %>
+      </div>
+    </div>
+    <% } %>
+    
+    <div class="post-content">
+      <% if (page.thumbnail) { %>
+        <p>
+          <img class="post-banner" src="<%- page.thumbnail %>" alt="banner" data-action="zoom" />
+        </p>
+      <% } %>
+
+      <%- page.content %>
+    </div>
+    <%- partial('_partial/post/copyright') %>
+  </article>
+  <%- partial('_partial/post/navigation') %>
+  
+  <div id="comments" style="display: none">
+    <div id="disqus_thread"></div>
+  </div>
+</main>
+<!-- Zoom.js 用于图片缩放 -->
+<script src="/js/zoom-js/js/zoom.js"></script>
+
+<!-- Disqus 用于评论系统 -->
+<% if (theme.comment.use == 'disqus') { %>
+<script type="text/javascript">
+  var disqus_config = function () {
+    this.page.url = '<%= page.permalink %>';  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = '<%= page.permalink %>'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+  }
+  document.querySelector('#outcomment').onclick = function() {
+    var d = document;
+    var s = d.createElement('script');
+    s.src = '//<%= theme.comment.shortname %>.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', + new Date());
+    (d.head || d.body).appendChild(s);
+  }
+</script>
+<% } %>
+
+<script type="text/javascript">
+
+  // 锚点平滑滚动
+  // $('a[href*=#],area[href*=#]').click(function() {
+  //     $body = (window.opera) ? (document.compatMode == "CSS1Compat" ? $('html') : $('body')) : $('html,body'); //Opera BUG fixed
+  //     if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname && location.search == this.search) {
+  //         var $target = $(this.hash);
+  //         $target = $target.length && $target || $('[name=' + this.hash.slice(1) + ']');
+  //         if ($target.length) {
+  //             var targetOffset = $target.offset().top;
+  //             $('html,body').animate({
+  //                 scrollTop: targetOffset
+  //             },
+  //             1000);
+  //             return false;
+  //         }
+  //     }
+  // });
+</script>

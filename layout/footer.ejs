@@ -1,0 +1,235 @@
+<footer id="footer" class="container" style="display:none;">
+  <hr>
+  <p>&copy; <%= date(new Date(), 'YYYY') %> <a href="<%= config.url %>"><%= config.title %></a>.
+  Using <a target="_blank" href="https://hexo.io/">Hexo</a> & <a target="_blank" href="https://github.com/Anapopo/Moricolor-for-Hexo/">Moricolor</a>
+  <% const themeRss = theme.url && theme.url.rss %>
+  <% const feedPath = config.feed && config.feed.path %>
+  <% const rssHref = themeRss || (feedPath ? url_for(feedPath) : null) %>
+  <% if (rssHref) { %>
+  / <a href="<%= rssHref %>">RSS</a>
+  <% } %>
+  </p>
+</footer>
+
+<!-- Hitokoto -->
+<% if (is_home() && theme.bottomtools.hitokoto) { %>
+  <script>
+    (function(){
+      var el = document.querySelector('#hitokoto')
+      if (!el) return
+      fetch('https://v1.hitokoto.cn/?encode=text')
+        .then(function(res){ return res.text() })
+        .then(function(hitokoto){
+          el.innerHTML = 'Hitokoto&nbsp; · &nbsp;&nbsp;' + hitokoto
+        })
+        .catch(function(){
+          el.innerHTML = 'Hitokoto&nbsp; · &nbsp;&nbsp;欢迎回来'
+        })
+    })()
+  </script>
+<% } %>
+
+<!-- Load other scripts -->
+<% if (theme.scripts !== undefined && theme.scripts.length > 0) { %>
+  <!-- scripts list from theme config.yml -->
+  <% theme.scripts.forEach(function(url) { %>
+    <script src="<%=url%>"></script>
+  <% }); %>
+<% } %>
+<script src="/js/text-autospace.min.js"></script>
+
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.jQuery) {
+    $("#main-posts").fadeIn(800);
+    $("#main-index").fadeIn(800);
+    $("#main-archive").fadeIn(800);
+    $("#main-tag").fadeIn(800);
+    $("#main-post").fadeIn(500);
+    $(".post-nav").fadeIn(800);
+    $("#main-page").fadeIn(500);
+    $("#pagenav").fadeIn(800);
+    $("#main-bottom").fadeIn(1200);
+    $("#bottomtools").fadeIn(1200);
+    $("#comments").fadeIn(1000);
+    $("#footer").fadeIn(1200);
+  } else {
+    const showSelectors = [
+      "#main-posts",
+      "#main-index",
+      "#main-archive",
+      "#main-tag",
+      "#main-post",
+      "#main-page",
+      "#pagenav",
+      "#main-bottom",
+      "#bottomtools",
+      "#comments",
+      "#footer"
+    ]
+    showSelectors.forEach(selector => {
+      const el = document.querySelector(selector)
+      if (el) el.style.display = ''
+    })
+    document.querySelectorAll('.post-nav').forEach(el => {
+      el.style.display = ''
+    })
+  }
+
+  document.querySelectorAll('.post-content figure.highlight pre').forEach(e=>{
+    let lines = e.querySelectorAll('.line')
+    let widths = new Set()
+    lines.forEach(line=>widths.add(line.scrollWidth))
+    let max = Math.max(...widths)
+    lines.forEach(line => { line.style.width = max + 'px' })
+  })
+  ;(function initCodeCopy(){
+    function copyText(text) {
+      if (!text) return Promise.reject()
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text)
+      }
+      return new Promise(function(resolve, reject){
+        var textarea = document.createElement('textarea')
+        textarea.value = text
+        textarea.setAttribute('readonly', '')
+        textarea.style.position = 'fixed'
+        textarea.style.opacity = '0'
+        document.body.appendChild(textarea)
+        textarea.select()
+        try {
+          var ok = document.execCommand('copy')
+          document.body.removeChild(textarea)
+          ok ? resolve() : reject()
+        } catch (err) {
+          document.body.removeChild(textarea)
+          reject(err)
+        }
+      })
+    }
+
+    document.querySelectorAll('.post-content figure.highlight').forEach(function(figure){
+      if (figure.querySelector('.code-copy')) return
+      var btn = document.createElement('button')
+      btn.type = 'button'
+      btn.className = 'code-copy'
+      btn.textContent = '复制'
+      btn.addEventListener('click', function(){
+        var codeCell = figure.querySelector('td.code')
+        var pre = figure.querySelector('pre')
+        var text = codeCell ? codeCell.innerText : (pre ? pre.innerText : '')
+        text = String(text || '').replace(/\n+$/, '')
+        copyText(text).then(function(){
+          btn.textContent = '已复制'
+          setTimeout(function(){ btn.textContent = '复制' }, 1200)
+        }).catch(function(){
+          btn.textContent = '失败'
+          setTimeout(function(){ btn.textContent = '复制' }, 1200)
+        })
+      })
+      figure.appendChild(btn)
+    })
+  })()
+  // 获取代码块内容
+  document.querySelectorAll('.post-content figure.highlight .tools').forEach(e=>{
+    e.onclick = function() {
+      console.log(e.previousSibling.innerText.replace(/(\n[\s\t]*\r*\n)/g, '\n').replace(/^[\n\r\n\t]*|[\n\r\n\t]*$/g, ''))
+    }
+  })
+
+  ;(function initLocalSearch(){
+    var input = document.getElementById('local-search-input')
+    var results = document.getElementById('local-search-results')
+    if (!input || !results) return
+
+    var searchPath = '<%= url_for((config.search && config.search.path) ? config.search.path : "search.json") %>'
+    var cache = null
+    var loading = false
+
+    function stripHtml(html) {
+      return String(html).replace(/<[^>]*>/g, ' ')
+    }
+
+    function normalize(text) {
+      return String(text || '').toLowerCase()
+    }
+
+    function loadData(cb) {
+      if (cache) return cb(cache)
+      if (loading) return
+      loading = true
+      fetch(searchPath).then(function(res){
+        return res.json()
+      }).then(function(data){
+        cache = data || []
+        loading = false
+        cb(cache)
+      }).catch(function(){
+        loading = false
+      })
+    }
+
+    function render(list, query) {
+      if (!list.length) {
+        results.innerHTML = '<div class="search-snippet">暂无结果</div>'
+        results.style.display = 'block'
+        return
+      }
+      var max = 10
+      var items = list.slice(0, max).map(function(item){
+        var title = item.title || 'Untitled'
+        var content = stripHtml(item.content || '')
+        var idx = normalize(content).indexOf(query)
+        var snippet = ''
+        if (idx >= 0) {
+          snippet = content.slice(Math.max(0, idx - 30), idx + 60)
+        } else {
+          snippet = content.slice(0, 90)
+        }
+        return '<li><a href="' + item.url + '"><span class="search-title">' +
+          title + '</span><span class="search-snippet">' + snippet +
+          '</span></a></li>'
+      }).join('')
+      results.innerHTML = '<ul>' + items + '</ul>'
+      results.style.display = 'block'
+    }
+
+    function search(query) {
+      var q = normalize(query).trim()
+      if (q.length < 2) {
+        results.style.display = 'none'
+        results.innerHTML = ''
+        return
+      }
+      loadData(function(data){
+        var list = data.filter(function(item){
+          var title = normalize(item.title)
+          var content = normalize(stripHtml(item.content))
+          return title.indexOf(q) >= 0 || content.indexOf(q) >= 0
+        })
+        render(list, q)
+      })
+    }
+
+    input.addEventListener('input', function(){
+      search(input.value)
+    })
+    document.addEventListener('click', function(e){
+      if (!results.contains(e.target) && e.target !== input) {
+        results.style.display = 'none'
+      }
+    })
+  })()
+
+})
+if (window.jQuery) {
+  $("#comment_go").click(function(){
+    $("#comments").fadeIn(1000);
+  });
+
+  $('[data-toggle=tooltip]').tooltip();
+  $("#outcomment").click(function(){
+    $("#comments").fadeIn(1000);
+  });
+}
+</script>

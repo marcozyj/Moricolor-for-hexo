@@ -1,0 +1,108 @@
+<main id="main" class="container">
+  <div id="main-index" style="display: none;">
+    <h4>記事</h4>
+    <% var post_count = 0 %>
+    <% page.posts.sort('date', -1).each(function(post) { %>
+      <% post_count++ %>
+      <% var collapse = (post_count<=1?'collapse in':'collapse') %>
+      <article>
+        <dl class="dl-horizontal">
+          <dt>
+            <a style="color:#34495e;" title="Click me" data-toggle="collapse" href="#<%= post_count %>" aria-expanded="false" aria-controls="<%= post.title%>">
+            <%- time_tag(post.date, 'MMM DD, YYYY') %>
+            </a>
+          </dt>
+          <dd><a href="<%= url_for(post.path) %>"><%= post.title %></a></dd>
+          <dd class="<%= collapse %>" id="<%= post_count %>">
+            <small><%= strip_html(post.excerpt) %></small>
+          </dd>
+        </dl>
+      </article>
+    <% }) %>
+  </div>
+
+  <div id="pagenav" class="text-center" style="display: none;">
+    <ul class="pager">
+      <li class="previous">
+        <% if (page.prev) { %>
+          <a title="上一页" href="<%- url_for(page.prev_link) %>"><span><i class="fui-arrow-left"></i></span></a>
+        <% } else { %>
+          <a class="pager-disabled" href="javascript:void(0)" title="没有上一页" data-toggle="tooltip"><span><i class="fui-arrow-left"></i></span></a>
+        <% } %>
+      </li>
+
+      <li class="pagination-dropdown dropup">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <span class="fui-list"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-inverse" style="margin-bottom:15px;">
+          <% if (theme.menu) { %>
+            <% Object.keys(theme.menu).forEach(function(name) { %>
+              <% const link = theme.menu[name] %>
+              <% if (link !== '/') { %>
+                <li><a href="<%= url_for(link) %>"><%= name %></a></li>
+              <% } %>
+            <% }) %>
+          <% } %>
+        </ul>
+      </li>
+
+      <li class="next">
+        <% if (page.next){ %>
+          <a title="下一页" href="<%- url_for(page.next_link) %>"><span><i class="fui-arrow-right"></i></span></a>
+        <% } else { %>
+          <a class="pager-disabled" href="javascript:void(0)" title="没有下一页" data-toggle="tooltip"><span><i class="fui-arrow-right"></i></span></a>
+        <% } %>
+      </li>
+    </ul>
+  </div>
+
+  <div id="bottomtools" style="display: none;">
+    <h6>(ฅ´ω`ฅ)</h6>
+    <small>
+      <ul>
+        <section class="bottomtool">
+          <% const tagCount = site.tags && site.tags.length ? site.tags.length : 0 %>
+          <% const categoryCount = site.categories && site.categories.length ? site.categories.length : 0 %>
+          <% if (theme.bottomtools.hitokoto) { %>
+            <div id="hitokoto" class="bottomtool-line">Hitokoto&nbsp; · &nbsp;&nbsp;Hitokoto Loading...</div>
+          <% } %>
+          <% if (theme.bottomtools.category) { %>
+            <div class="bottomtool-line">
+              <span style="padding-right: 1px;">Category</span>&nbsp; · &nbsp;
+              <% if (categoryCount > 0) { %>
+                <% site.categories.each(function(cat) { %>
+                  <a href="<%= url_for(cat.path) %>"> &<%= cat.name.toUpperCase() %> </a>&nbsp; · &nbsp;
+                <% }) %>
+              <% } else { %>
+                <span>暂无分类</span>
+              <% } %>
+            </div>
+          <% } %>
+          <% if (theme.bottomtools.tag) { %>
+            <div class="bottomtool-line">
+              <span style="padding-right: 1px;">Tag</span>&nbsp; · &nbsp;
+              <% if (tagCount > 0) { %>
+                <% site.tags.each(function(tag) { %>
+                  <a href="<%= url_for(tag.path) %>"> &<%= tag.name.toUpperCase() %> </a>&nbsp; · &nbsp;
+                <% }) %>
+              <% } else { %>
+                <span>暂无标签</span>
+              <% } %>
+            </div>
+          <% } %>
+        </section>
+      </ul>
+      <form id="local-search" class="bottomtool-search" onsubmit="return false;">
+        <input
+          id="local-search-input"
+          autocomplete="off"
+          type="text"
+          class="form-control input-sm"
+          placeholder="Search anything here~"
+        />
+        <div id="local-search-results" class="search-results"></div>
+      </form>
+    </small>
+  </div>
+</main>
